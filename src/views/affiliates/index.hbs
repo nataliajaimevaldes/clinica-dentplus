@@ -1,0 +1,87 @@
+<h1>Listado de Afiliados</h1>
+
+<a href="/affiliates/create">
+  + Crear nuevo afiliado
+</a>
+
+<hr>
+
+{{#if affiliates.length}}
+
+  <table border="1" cellpadding="10">
+
+    <thead>
+
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Email</th>
+        <th>Afiliación</th>
+        <th>Acciones</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      {{#each affiliates}}
+
+        <tr>
+
+          <td>{{this.id}}</td>
+
+          <td>{{this.firstName}}</td>
+
+          <td>{{this.lastName}}</td>
+
+          <td>{{this.email}}</td>
+
+          <td>{{this.membershipType}}</td>
+
+          <td>
+
+            <a href="/affiliates/{{this.id}}">
+              Ver
+            </a>
+
+            |
+
+            <a href="/affiliates/edit/{{this.id}}">
+              Editar
+            </a>
+
+            |
+
+            <form
+              action="/affiliates/delete/{{this.id}}"
+              method="POST"
+              style="display:inline;"
+            >
+
+              <button
+                type="submit"
+                onclick="return confirm('¿Eliminar afiliado?')"
+              >
+                Eliminar
+              </button>
+
+            </form>
+
+          </td>
+
+        </tr>
+
+      {{/each}}
+
+    </tbody>
+
+  </table>
+
+{{else}}
+
+  <p>
+    No existen afiliados registrados.
+  </p>
+
+{{/if}}

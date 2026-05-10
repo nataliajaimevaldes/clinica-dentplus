@@ -1,0 +1,35 @@
+<a href="/affiliates">
+  Ver afiliados
+</a>
+<h1>Detalle Afiliado</h1>
+
+<p>Nombre: {{affiliate.firstName}}</p>
+<p>Apellido: {{affiliate.lastName}}</p>
+<p>Email: {{affiliate.email}}</p>
+<p>Tipo: {{affiliate.membershipType}}</p>
+
+<hr>
+
+<h2>Simulador de descuento</h2>
+
+<form method="POST" action="/affiliates/simulate/{{affiliate.id}}">
+  
+  <input
+    type="number"
+    name="amount"
+    placeholder="Monto tratamiento"
+    required
+  >
+
+  <button type="submit">
+    Calcular
+  </button>
+
+</form>
+
+{{#if simulation}}
+
+<p>Descuento: {{simulation.discountPercentage}}%</p>
+<p>Total final: ${{simulation.finalPrice}}</p>
+
+{{/if}}
