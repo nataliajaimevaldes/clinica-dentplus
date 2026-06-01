@@ -4,6 +4,7 @@ import { engine } from "express-handlebars";
 import authRouter from "./routes/authRoutes.js";
 import affiliateRouter from "./routes/affiliateRoutes.js";
 import { isLoggedIn, isLoggedOut } from "./middleware/authMiddleware.js";
+import { AuthController } from "./controllers/auth.controller.js";
 
 const app = express();
 
@@ -58,8 +59,6 @@ app.get("/register", isLoggedOut, (req, res) => {
 
 // Rutas protegidas
 app.use("/affiliates", isLoggedIn, affiliateRouter);
-app.get("/logout", (req, res) => {
-  res.redirect("/auth/logout");
-});
+app.get("/logout", isLoggedIn, AuthController.logout);
 
 export default app;
