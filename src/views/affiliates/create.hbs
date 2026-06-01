@@ -1,0 +1,85 @@
+<div class="container mt-4">
+  <a href="/" class="btn btn-secondary mb-3">
+    <i class="fas fa-arrow-left"></i> Volver
+  </a>
+
+  <h1>Crear nuevo afiliado</h1>
+
+  {{#if errors.general}}
+    <div class="alert alert-danger" role="alert">
+      {{errors.general}}
+    </div>
+  {{/if}}
+
+<form action="/affiliates/create" method="POST" novalidate>
+  <div class="mb-3">
+    <label for="firstName" class="form-label">Nombre <span class="text-danger">*</span></label>
+    <input
+      type="text"
+      class="form-control {{#if errors.firstName}}is-invalid{{/if}}"
+      id="firstName"
+      name="firstName"
+      value="{{firstName}}"
+      required>
+    {{#if errors.firstName}}
+      <div class="invalid-feedback d-block">
+        {{errors.firstName}}
+      </div>
+    {{/if}}    
+  </div>
+  <div class="mb-3">
+    <label for="lastName" class="form-label">Apellido <span class="text-danger">*</span></label>
+    <input
+      type="text"
+      class="form-control {{#if errors.lastName}}is-invalid{{/if}}"
+      id="lastName"
+      name="lastName"
+      value="{{lastName}}"
+      required>
+    {{#if errors.lastName}}
+      <div class="invalid-feedback d-block">
+        {{errors.lastName}}
+      </div>
+    {{/if}}    
+  </div>
+  <div class="mb-3">
+    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+    <input
+      type="email"
+      class="form-control {{#if errors.email}}is-invalid{{/if}}"
+      id="email"
+      name="email"
+      value="{{email}}"
+      required>
+    {{#if errors.email}}
+      <div class="invalid-feedback d-block">
+        {{errors.email}}
+      </div>
+    {{/if}}    
+  </div>
+  <div class="mb-3">
+    <label for="membershipType" class="form-label">Tipo de afiliación <span class="text-danger">*</span></label>
+    <select
+      class="form-select {{#if errors.membershipType}}is-invalid{{/if}}"
+      id="membershipType"
+      name="membershipType"
+      required>
+      <option value="">Seleccione un tipo</option>
+      <option value="silver" {{#if membershipType}}{{#ifEquals membershipType 'silver'}}selected{{/ifEquals}}{{/if}}>Silver</option>
+      <option value="gold" {{#if membershipType}}{{#ifEquals membershipType 'gold'}}selected{{/ifEquals}}{{/if}}>Gold</option>
+      <option value="platinum" {{#if membershipType}}{{#ifEquals membershipType 'platinum'}}selected{{/ifEquals}}{{/if}}>Platinum</option>
+    </select>
+    {{#if errors.membershipType}}
+      <div class="invalid-feedback d-block">
+        {{errors.membershipType}}
+      </div>
+    {{/if}}    
+  </div>
+  <button type="submit" class="btn btn-primary">Crear</button>
+
+</form>
+<br>
+<a href="/affiliates" class="btn btn-secondary">
+  <i class="fas fa-arrow-left"></i> Volver al listado
+</a>
+

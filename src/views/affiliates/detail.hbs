@@ -1,0 +1,60 @@
+<div class="container mt-4">
+  <h1 class="mb-4">Detalle Afiliado</h1>
+  <a href="/affiliates/create" class="btn btn-primary mb-3">+ Crear afiliado</a>
+
+{{#if affiliate}}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Email</th>
+        <th>Tipo de afiliación</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{affiliate.id}}</td>
+        <td>{{affiliate.firstName}}</td>
+        <td>{{affiliate.lastName}}</td>
+        <td>{{affiliate.email}}</td>
+        <td>{{affiliate.membershipType}}</td>
+      </tr>
+    </tbody>
+  </table>
+{{else}}
+  <p class="text-muted">Afiliado no encontrado.</p>
+{{/if}}
+</div>
+
+<hr>
+
+<h2 class="mb-4">Simulador de descuento</h2>
+
+<form method="POST" action="/affiliates/simulate/{{affiliate.id}}">
+  
+  <div class="mb-3">
+    <label for="amount" class="form-label">Monto del tratamiento</label>
+    <input
+      type="number"
+      class="form-control"
+      id="amount"
+      name="amount"
+      placeholder="Ingrese el monto del tratamiento"
+    >
+  </div>
+
+  <button type="submit" class="btn btn-success">
+    Calcular descuento
+  </button>
+
+</form>
+
+{{#if simulation}}
+  <div class="alert alert-info mt-4">
+    <h4>Resultados de la simulación:</h4>
+    <p><strong>Descuento aplicado:</strong> {{simulation.discountPercentage}}%</p>
+    <p><strong>Total a pagar:</strong> ${{simulation.finalPrice}}</p>
+  </div>
+{{/if}}

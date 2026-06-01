@@ -1,0 +1,64 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1>Mis Afiliados</h1>
+      {{#if userEmail}}
+        <p class="text-muted">Sesión: <strong>{{userEmail}}</strong></p>
+      {{/if}}
+    </div>
+    <a href="/logout" class="btn btn-danger">Cerrar Sesión</a>
+  </div>
+
+  <a href="/affiliates/create" class="btn btn-primary mb-3">
+    + Crear nuevo afiliado
+  </a>
+  {{#if affiliates.length}}
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Email</th>
+          <th>Afiliación</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each affiliates}}
+          <tr>
+            <td>{{this.id}}</td>
+            <td>{{this.firstName}}</td>
+            <td>{{this.lastName}}</td>
+            <td>{{this.email}}</td>
+            <td>{{this.membershipType}}</td>
+            <td>
+              <a href="/affiliates/{{this.id}}" class="btn btn-info btn-sm">Ver</a>
+              <a href="/affiliates/edit/{{this.id}}" class="btn btn-warning btn-sm">Editar</a>
+              <form
+                action="/affiliates/delete/{{this.id}}"
+                method="POST"
+                style="display:inline;"
+              >
+                <button
+                  type="submit"
+                  class="btn btn-danger btn-sm"
+                  onclick="return confirm('¿Eliminar afiliado?')"
+                >
+                  Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p>No existen afiliados registrados.</p>
+  {{/if}}
+
+  <br>
+<a href="/" class="btn btn-secondary">
+  <i class="fas fa-arrow-left"></i> Volver a inicio
+</a>
+</div>

@@ -1,0 +1,88 @@
+<div class="container mt-4">
+  <a href="/" class="btn btn-secondary mb-3">
+    <i class="fas fa-arrow-left"></i> Volver
+  </a>
+
+  <h1 class="mb-4">Editar afiliado {{affiliate.firstName}} {{affiliate.lastName}}</h1>
+
+  {{#if errors.general}}
+    <div class="alert alert-danger" role="alert">
+      {{errors.general}}
+    </div>
+  {{/if}}
+
+  <form action="/affiliates/update/{{affiliate.id}}" method="POST">
+
+    <div class="mb-3">
+      <label for="firstName" class="form-label">Nombre</label>
+      <input
+        type="text"
+        class="form-control {{#if errors.firstName}}is-invalid{{/if}}"
+        id="firstName"
+        name="firstName"
+        value="{{firstName}}{{#unless firstName}}{{affiliate.firstName}}{{/unless}}"
+      >
+      {{#if errors.firstName}}
+        <div class="invalid-feedback d-block">
+          {{errors.firstName}}
+        </div>
+      {{/if}}
+    </div>
+
+    <div class="mb-3">
+      <label for="lastName" class="form-label">Apellido</label>
+      <input
+        type="text"
+        class="form-control {{#if errors.lastName}}is-invalid{{/if}}"
+        id="lastName"
+        name="lastName"
+        value="{{lastName}}{{#unless lastName}}{{affiliate.lastName}}{{/unless}}"
+      >
+      {{#if errors.lastName}}
+        <div class="invalid-feedback d-block">
+          {{errors.lastName}}
+        </div>
+      {{/if}}
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input
+        type="email"
+        class="form-control {{#if errors.email}}is-invalid{{/if}}"
+        id="email"
+        name="email"
+        value="{{email}}{{#unless email}}{{affiliate.email}}{{/unless}}"
+      >
+      {{#if errors.email}}
+        <div class="invalid-feedback d-block">
+          {{errors.email}}
+        </div>
+      {{/if}}   
+    </div>
+
+    <div class="mb-3">
+      <label for="membershipType" class="form-label">Tipo de afiliación</label>
+      <select
+        class="form-select {{#if errors.membershipType}}is-invalid{{/if}}"
+        id="membershipType"
+        name="membershipType"
+      >
+        <option value="">Seleccione</option>
+        <option value="silver" {{#if membershipType}}{{#ifEquals membershipType "silver"}}selected{{/ifEquals}}{{else}}{{#ifEquals affiliate.membershipType "silver"}}selected{{/ifEquals}}{{/if}}>Silver</option>
+        <option value="gold" {{#if membershipType}}{{#ifEquals membershipType "gold"}}selected{{/ifEquals}}{{else}}{{#ifEquals affiliate.membershipType "gold"}}selected{{/ifEquals}}{{/if}}>Gold</option>
+        <option value="platinum" {{#if membershipType}}{{#ifEquals membershipType "platinum"}}selected{{/ifEquals}}{{else}}{{#ifEquals affiliate.membershipType "platinum"}}selected{{/ifEquals}}{{/if}}>Platinum</option>
+      </select>
+      {{#if errors.membershipType}}
+        <div class="invalid-feedback d-block">
+          {{errors.membershipType}}
+        </div>
+      {{/if}}    
+    </div>  
+
+    <button type="submit" class="btn btn-primary">
+      Guardar cambios
+    </button>
+
+  </form>
+</div>

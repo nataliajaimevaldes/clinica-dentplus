@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const affiliateController_js_1 = require("../controllers/affiliateController.js");
+const router = (0, express_1.Router)();
+router.get("/", affiliateController_js_1.AffiliateController.index);
+router.get("/create", affiliateController_js_1.AffiliateController.createView);
+router.post("/create", affiliateController_js_1.AffiliateController.create);
+router.get("/edit/:id", affiliateController_js_1.AffiliateController.editView);
+router.post("/update/:id", affiliateController_js_1.AffiliateController.update);
+router.post("/delete/:id", affiliateController_js_1.AffiliateController.delete);
+router.post("/simulate/:id", affiliateController_js_1.AffiliateController.simulate);
+router.get("/:id", affiliateController_js_1.AffiliateController.show);
+exports.default = router;
