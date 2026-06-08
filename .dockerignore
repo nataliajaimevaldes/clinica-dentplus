@@ -1,5 +1,14 @@
 node_modules
-dist
 .env
+.env.local
 *.db
-prisma/migrations
+.git
+.gitignore
+.dockerignore
+Dockerfile
+docker-compose.yml
+README.md
+src
+tsconfig.json
+.editorconfig
+.DS_Store

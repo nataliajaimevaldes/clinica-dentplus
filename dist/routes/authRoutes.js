@@ -7,5 +7,4 @@ router.get('/register', auth_controller_js_1.AuthController.registerView);
 router.post('/register', auth_controller_js_1.AuthController.register);
 router.get('/login', auth_controller_js_1.AuthController.loginView);
 router.post('/login', auth_controller_js_1.AuthController.login);
-router.get('/logout', auth_controller_js_1.AuthController.logout);
 exports.default = router;

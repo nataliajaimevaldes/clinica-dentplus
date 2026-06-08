@@ -6,46 +6,285 @@ El sistema permite a usuarios registrados administrar pacientes afiliados de una
 
 ---
 
-# Tecnologías utilizadas
+## Instrucciones para Levantar el Proyecto
 
-- **Node.js** - Runtime JavaScript
-- **Express** - Framework web
-- **TypeScript** - Lenguaje tipado
-- **Prisma ORM** - Gestor de base de datos
-- **PostgreSQL** - Base de datos relacional
-- **Handlebars** - Template engine
-- **Zod** - Validación de esquemas
-- **bcryptjs** - Hasheado de contraseñas
-- **Docker Compose** - Orquestación de contenedores
+### Requisitos previos
+- Docker y Docker Compose instalados
+- Node.js 18+ (para desarrollo local)
+- npm o yarn
+
+### Opción 1: Con Docker Compose (Recomendado)
+
+```bash
+# 1. Clonar el repositorio
+git clone <tu-repo>
+cd clinica-dentplus
+
+# 2. Levantar los servicios (base de datos + app)
+docker-compose up -d
+
+# 3. Ejecutar migraciones de base de datos
+docker exec clinica-dentplus npx prisma migrate deploy
+
+# 4. Seed de datos (opcional)
+docker exec clinica-dentplus npx prisma db seed
+
+# 5. La aplicación estará disponible en http://localhost:3000
+```
+
+### Opción 2: Desarrollo Local
+
+```bash
+# 1. Instalar dependencias
+npm install
+
+# 2. Configurar variables de entorno
+# Copiar .env.example a .env y configurar:
+# DATABASE_URL=postgresql://postgres:postgres@localhost:5432/clinica_dentplus
+
+# 3. Levantar solo la base de datos con Docker
+docker-compose up db -d
+
+# 4. Ejecutar migraciones
+npx prisma migrate deploy
+
+# 5. Ejecutar en modo desarrollo (con hot reload)
+npm run dev
+```
+
+### Detener servicios
+```bash
+# Detener sin eliminar volúmenes
+docker-compose stop
+
+# Detener y eliminar contenedores (mantiene datos)
+docker-compose down
+
+# Eliminar todo incluyendo datos
+docker-compose down -v
+```
 
 ---
 
-# Características
+## Tecnologías Utilizadas
 
-## Autenticación y Autorización
-- ✅ Registro e inicio de sesión de usuarios
-- ✅ Contraseñas hasheadas con bcryptjs
-- ✅ Sesiones seguras con express-session
-- ✅ Protección de rutas - solo usuarios autenticados pueden acceder a afiliados
-- ✅ Aislamiento de datos - cada usuario solo ve sus propios afiliados
-- ✅ Logout seguro con destrucción de sesión
+### Backend
+- **Node.js** - Runtime JavaScript de alto rendimiento
+- **Express** - Framework minimalista y flexible para APIs REST
+- **TypeScript** - Lenguaje tipado que previene errores en tiempo de compilación
 
-## Validaciones
-- ✅ Validaciones con Zod en todos los formularios
-- ✅ Mensajes de error inline junto a los campos
-- ✅ Repoblación de formularios en caso de error
-- ✅ Validaciones tanto en frontend como backend
+### Base de Datos
+- **Prisma ORM** - ORM moderno con type-safety automático y generación de tipos
+- **PostgreSQL** - Base de datos relacional robusta y confiable
 
-## CRUD de Afiliados
-- ✅ Listar afiliados del usuario autenticado
-- ✅ Ver detalle de afiliado
-- ✅ Crear afiliado
-- ✅ Editar afiliado con validación
-- ✅ Eliminar afiliado
+### Frontend
+- **Handlebars** - Template engine para renderizar vistas server-side (SSR)
+- **HTML/CSS** - Maquetación y estilos
 
-## Simulador de Descuentos
-- ✅ Calcular descuento según tipo de membresía
-- ✅ Mostrar precio final después de descuento
+### Seguridad
+- **bcryptjs** - Hasheado seguro de contraseñas con salt
+- **express-session** - Gestión de sesiones server-side
+- **Zod** - Validación de datos con type inference
+
+### DevOps
+- **Docker** - Containerización para ambiente consistente
+- **Docker Compose** - Orquestación de múltiples servicios
+
+---
+
+## ¿Por qué estas tecnologías?
+
+### TypeScript vs JavaScript puro
+-  **Type safety**: Errores detectados en compilación, no en runtime
+-  **Autocompletado**: IDEs proporcionan mejor intellisense
+-  **Mantenibilidad**: Código autodocumentado con tipos explícitos
+-  **Refactoring seguro**: Los tipos evitan breaking changes silenciosos
+
+### Prisma vs SQL puro
+-  **Type-safe queries**: Los tipos se generan automáticamente del schema
+-  **Migraciones automáticas**: Versionamiento de cambios en BD
+-  **Menos vulnerabilidades**: Previene SQL injection nativamente
+-  **DX mejorado**: Query builder más intuitivo que escribir SQL
+
+### Handlebars vs SPA Framework (React/Vue)
+-  **Simplicidad**: Ideal para proyectos medianos sin requisitos complejos
+-  **Performance**: SSR nativo, SEO optimizado, menos JavaScript en cliente
+-  **Curva de aprendizaje**: Plantillas simples, lógica en el backend
+-  **Bundle size**: La app es más ligera (sin 200kb de React)
+
+### Zod vs Validación manual
+-  **Type inference**: Genera tipos TypeScript automáticamente del schema
+-  **Reutilización**: Un schema se usa para backend y generación de tipos
+-  **Error messages claros**: Mensajes de validación estructurados
+-  **Menos código boilerplate**: No necesitas escribir validadores manuales
+- ✅**Transformaciones**: Modificar datos durante validación (ej: trim(), toLowerCase())
+
+**Ejemplo con Zod vs manual:**
+
+```typescript
+// ❌ Manual (tedioso y propenso a errores)
+function validateUser(data: unknown) {
+  if (typeof data !== 'object') throw new Error('Invalid');
+  if (typeof data.email !== 'string') throw new Error('Email must be string');
+  if (!data.email.includes('@')) throw new Error('Invalid email');
+  // ... más validaciones...
+}
+
+// ✅ Con Zod (declarativo y type-safe)
+const userSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
+
+type User = z.infer<typeof userSchema>; // Tipo generado automáticamente
+```
+
+### Docker Compose vs PostgreSQL local
+-  **Ambiente consistente**: Todos los desarrolladores usan la misma BD
+-  **Isolamiento**: No interfiere con otras aplicaciones en tu máquina
+-  **Fácil reseteo**: Eliminar volumen limpia la BD completamente
+-  **Ready para producción**: El mismo compose se usa en staging/prod
+
+---
+
+## Estructura de Carpetas
+
+La arquitectura MVC organiza el código por responsabilidad:
+
+```txt
+src/
+├── controllers/
+│   ├── auth.controller.ts          # Lógica de autenticación (login, register)
+│   └── affiliateController.ts      # CRUD de afiliados (create, read, update, delete)
+│
+├── models/
+│   ├── user.model.ts               # Operaciones DB para usuarios (queries Prisma)
+│   └── affiliate.model.ts          # Operaciones DB para afiliados
+│
+├── routes/
+│   ├── authRoutes.ts               # Mapeo de rutas auth (/login, /register)
+│   └── affiliateRoutes.ts          # Mapeo de rutas affiliates (/affiliates/*, etc)
+│
+├── schemas/
+│   ├── auth.schemas.ts             # Validaciones Zod para login/register
+│   └── affiliate.schemas.ts        # Validaciones Zod para afiliados
+│
+├── middleware/
+│   └── authMiddleware.ts           # Verificar autenticación en rutas protegidas
+│
+├── lib/
+│   ├── prisma.ts                   # Cliente singleton de Prisma
+│   └── parseError.ts               # Formatear errores para respuestas
+│
+├── views/
+│   ├── auth/
+│   │   ├── login.hbs               # Formulario de login
+│   │   └── register.hbs            # Formulario de registro
+│   ├── affiliates/
+│   │   ├── index.hbs               # Listado de afiliados
+│   │   ├── create.hbs              # Formulario crear afiliado
+│   │   ├── edit.hbs                # Formulario editar afiliado
+│   │   └── detail.hbs              # Detalle de un afiliado
+│   ├── layouts/
+│   │   └── main.hbs                # Layout base (navbar, estructura)
+│   ├── 404.hbs                     # Página no encontrada
+│   └── home.hbs                    # Homepage
+│
+├── app.ts                          # Configuración de Express, middlewares globales
+└── index.ts                        # Punto de entrada (inicia servidor)
+```
+
+### ¿Por qué esta estructura?
+
+| Carpeta | Propósito | Beneficio |
+|---------|-----------|----------|
+| `controllers/` | Lógica de request/response | Fácil testear, responsabilidad clara |
+| `models/` | Lógica de base de datos | Reutilizable, queries centralizadas |
+| `routes/` | Mapeo de URLs | Fácil ver todas las rutas en un lugar |
+| `schemas/` | Validaciones | Compartible entre controllers y tipos TS |
+| `middleware/` | Lógica transversal | Auth, logging, CORS, etc. |
+| `views/` | HTML templates | Renderizado server-side |
+| `lib/` | Utilidades globales | Funciones reutilizables |
+
+---
+
+## Docker Compose - Servicios
+
+### Servicio: `db` (PostgreSQL)
+
+```yaml
+db:
+  image: postgres:16-alpine        # Imagen oficial de PostgreSQL versión 16 (lightweight)
+  container_name: clinica-dentplus-db
+  restart: unless-stopped          # Reinicia si falla, excepto si lo detuviste manualmente
+  
+  environment:                      # Variables de configuración BD
+    POSTGRES_USER: postgres         # Usuario administrador
+    POSTGRES_PASSWORD: postgres     # Contraseña (¡cambiar en producción!)
+    POSTGRES_DB: clinica_dentplus  # Nombre de la BD
+  
+  ports:
+    - "5432:5432"                  # Puerto local:puerto contenedor
+                                    # Permite conectarse desde el host en localhost:5432
+  
+  volumes:
+    - postgres_data:/var/lib/postgresql/data  # Persistencia de datos
+                                    # Volumen named: datos sobreviven container restarts
+  
+  healthcheck:                      # Verifica que la BD esté lista
+    test: ["CMD-SHELL", "pg_isready -U postgres"]
+    interval: 5s                    # Chequear cada 5 segundos
+    timeout: 5s                     # Esperar máximo 5s por respuesta
+    retries: 5                      # Reintentar 5 veces
+  
+  networks:
+    - clinica-network              # Red Docker para comunicación con otros servicios
+```
+
+### ¿Qué hace cada parte?
+
+- **image:postgres:16-alpine** → Descarga PostgreSQL versión 16, imagen pequeña (70MB vs 300MB normal)
+- **POSTGRES_PASSWORD** → Credenciales para acceder a la BD
+- **ports** → Expone puerto 5432 del contenedor al host (tu máquina local)
+- **volumes** → Guarda datos en disco persistente (datos no se pierden al detener)
+- **healthcheck** → Docker espera a que la BD esté lista antes de iniciar app
+- **networks** → Aislamiento: solo servicios en esta red pueden conectarse
+
+### Red Bridge (`clinica-network`)
+
+La red bridge permite que los contenedores se comuniquen entre sí por nombre:
+```
+app → conecta a "db" → Docker resuelve a IP interna del contenedor
+```
+
+---
+
+## Características
+
+### Autenticación y Autorización
+-  Registro e inicio de sesión de usuarios
+-  Contraseñas hasheadas con bcryptjs (con salt rounds)
+-  Sesiones seguras con express-session
+-  Protección de rutas - solo usuarios autenticados pueden acceder a afiliados
+-  Aislamiento de datos - cada usuario solo ve sus propios afiliados
+-  Logout seguro con destrucción de sesión
+
+### Validaciones
+-  Validaciones con Zod en todos los formularios
+-  Mensajes de error inline junto a los campos
+-  Repoblación de formularios en caso de error
+-  Validaciones tanto en frontend como backend (nunca confíes solo en cliente)
+
+### CRUD de Afiliados
+-  Listar afiliados del usuario autenticado
+-  Ver detalle de afiliado
+-  Crear afiliado
+-  Editar afiliado con validación
+-  Eliminar afiliado
+
+### Simulador de Descuentos
+-  Calcular descuento según tipo de membresía
+-  Mostrar precio final después de descuento
 
 | Membresía | Descuento |
 |----------|-----------|
@@ -55,49 +294,61 @@ El sistema permite a usuarios registrados administrar pacientes afiliados de una
 
 ---
 
-# Arquitectura MVC
+## Comandos útiles
 
-El proyecto está organizado utilizando el patrón MVC:
+```bash
+# Compilar TypeScript a JavaScript
+npm run build
 
-```txt
-src/
-├── controllers/
-│   ├── auth.controller.ts          # Lógica de autenticación
-│   └── affiliateController.ts      # CRUD de afiliados
-├── models/
-│   ├── user.model.ts               # Operaciones de usuario
-│   └── affiliate.model.ts           # Operaciones de afiliado
-├── routes/
-│   ├── authRoutes.ts               # Rutas de autenticación
-│   └── affiliateRoutes.ts          # Rutas de afiliados
-├── schemas/
-│   ├── auth.schemas.ts             # Validaciones con Zod
-│   └── affiliate.schemas.ts        # Validaciones de afiliado
-├── middleware/
-│   └── authMiddleware.ts           # Protección de rutas
-├── lib/
-│   ├── prisma.ts                   # Cliente de Prisma
-│   └── parseError.ts               # Formateo de errores
-├── views/
-│   ├── auth/
-│   │   ├── login.hbs
-│   │   └── register.hbs
-│   ├── affiliates/
-│   │   ├── index.hbs
-│   │   ├── create.hbs
-│   │   ├── edit.hbs
-│   │   └── detail.hbs
-│   ├── layouts/
-│   │   └── main.hbs
-│   ├── 404.hbs
-│   └── home.hbs
-├── app.ts                          # Configuración de Express
-└── index.ts                        # Punto de entrada
+# Ver la carpeta dist/ generada
+ls dist/
+
+# Desarrollar con hot-reload
+npm run dev
+
+# Ejecutar en producción (desde dist/)
+npm start
+
+# Migraciones
+npx prisma migrate dev --name <nombre>  # Crear migración
+npx prisma migrate deploy               # Ejecutar migraciones
+npx prisma studio                       # Abrir GUI de Prisma
+
+# Logs del contenedor
+docker-compose logs -f db
+
+# Conectarse a PostgreSQL desde terminal
+docker-compose exec db psql -U postgres -d clinica_dentplus
 ```
 
-- **Model**: Prisma ORM + PostgreSQL
-- **View**: Handlebars (.hbs)
-- **Controller**: Lógica de negocio con validaciones
+---
+
+## Variables de Entorno
+
+Crear archivo `.env`:
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/clinica_dentplus"
+NODE_ENV="development"
+```
+
+Para producción cambiar:
+- `postgres:postgres` → credenciales seguras
+- `localhost` → hostname del servidor BD
+- `NODE_ENV="production"`
+
+---
+
+## Estructura de Compilación
+
+```
+src/ (TypeScript) → npm run build → dist/ (JavaScript)
+                   ↓
+              Ejecuta en producción
+              (node dist/index.js)
+```
+
+**dist/** NO se versiona (está en .gitignore). Se regenera con cada build.
 - **Router**: Rutas con middleware de protección
 
 ---
@@ -290,12 +541,12 @@ enum MembershipType {
 
 # Seguridad
 
-- ✅ Contraseñas hasheadas con bcryptjs (10 rounds)
-- ✅ Sesiones con HTTPOnly cookies
-- ✅ Protección de rutas con middleware
-- ✅ Validación de entrada con Zod
-- ✅ Aislamiento de datos por usuario
-- ✅ Eliminación en cascada de afiliados al eliminar usuario
+-  Contraseñas hasheadas con bcryptjs (10 rounds)
+-  Sesiones con HTTPOnly cookies
+-  Protección de rutas con middleware
+-  Validación de entrada con Zod
+-  Aislamiento de datos por usuario
+-  Eliminación en cascada de afiliados al eliminar usuario
 
 ---
 

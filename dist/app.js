@@ -9,6 +9,7 @@ const express_handlebars_1 = require("express-handlebars");
 const authRoutes_js_1 = __importDefault(require("./routes/authRoutes.js"));
 const affiliateRoutes_js_1 = __importDefault(require("./routes/affiliateRoutes.js"));
 const authMiddleware_js_1 = require("./middleware/authMiddleware.js");
+const auth_controller_js_1 = require("./controllers/auth.controller.js");
 const app = (0, express_1.default)();
 app.engine("hbs", (0, express_handlebars_1.engine)({
     extname: ".hbs",
@@ -55,7 +56,5 @@ app.get("/register", authMiddleware_js_1.isLoggedOut, (req, res) => {
 });
 // Rutas protegidas
 app.use("/affiliates", authMiddleware_js_1.isLoggedIn, affiliateRoutes_js_1.default);
-app.get("/logout", (req, res) => {
-    res.redirect("/auth/logout");
-});
+app.get("/logout", authMiddleware_js_1.isLoggedIn, auth_controller_js_1.AuthController.logout);
 exports.default = app;
