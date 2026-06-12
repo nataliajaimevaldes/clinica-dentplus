@@ -1,103 +1,30 @@
-# Sistema de Gestión de Afiliados - Clínica Dental
+# Clínica Dental - Sistema de Gestión de Afiliados
 
-Proyecto desarrollado con Node.js, Express, TypeScript, Prisma y Handlebars utilizando arquitectura MVC.
+Sistema de gestión de afiliados para clínica dental desarrollado con Node.js, Express, TypeScript, Prisma y PostgreSQL.
 
-El sistema permite a usuarios registrados administrar pacientes afiliados de una clínica dental y simular descuentos según el tipo de afiliación. Incluye autenticación segura con sesiones y contraseñas hasheadas con bcryptjs.
+## Inicio Rápido
 
----
-
-## Instrucciones para Levantar el Proyecto
-
-### Requisitos previos
-- Docker y Docker Compose instalados
-- Node.js 18+ (para desarrollo local)
-- npm o yarn
-
-### Opción 1: Con Docker Compose (Recomendado)
-
+### Con Docker (Recomendado)
 ```bash
-# 1. Clonar el repositorio
-git clone <tu-repo>
-cd clinica-dentplus
-
-# 2. Levantar los servicios (base de datos + app)
 docker-compose up -d
-
-# 3. Ejecutar migraciones de base de datos
 docker exec clinica-dentplus npx prisma migrate deploy
-
-# 4. Seed de datos (opcional)
-docker exec clinica-dentplus npx prisma db seed
-
-# 5. La aplicación estará disponible en http://localhost:3000
+npm run dev  # o visitá http://localhost:3000
 ```
 
-### Opción 2: Desarrollo Local
-
+### Desarrollo Local
 ```bash
-# 1. Instalar dependencias
 npm install
-
-# 2. Configurar variables de entorno
-# Copiar .env.example a .env y configurar:
-# DATABASE_URL=postgresql://postgres:postgres@localhost:5432/clinica_dentplus
-
-# 3. Levantar solo la base de datos con Docker
 docker-compose up db -d
-
-# 4. Ejecutar migraciones
 npx prisma migrate deploy
-
-# 5. Ejecutar en modo desarrollo (con hot reload)
 npm run dev
 ```
 
-### Detener servicios
-```bash
-# Detener sin eliminar volúmenes
-docker-compose stop
-
-# Detener y eliminar contenedores (mantiene datos)
-docker-compose down
-
-# Eliminar todo incluyendo datos
-docker-compose down -v
-```
-
----
-
-## Tecnologías Utilizadas
-
-### Backend
-- **Node.js** - Runtime JavaScript de alto rendimiento
-- **Express** - Framework minimalista y flexible para APIs REST
-- **TypeScript** - Lenguaje tipado que previene errores en tiempo de compilación
-
-### Base de Datos
-- **Prisma ORM** - ORM moderno con type-safety automático y generación de tipos
-- **PostgreSQL** - Base de datos relacional robusta y confiable
-
-### Frontend
-- **Handlebars** - Template engine para renderizar vistas server-side (SSR)
-- **HTML/CSS** - Maquetación y estilos
-
-### Seguridad
-- **bcryptjs** - Hasheado seguro de contraseñas con salt
-- **express-session** - Gestión de sesiones server-side
-- **Zod** - Validación de datos con type inference
-
-### DevOps
-- **Docker** - Containerización para ambiente consistente
-- **Docker Compose** - Orquestación de múltiples servicios
-
----
-
-## ¿Por qué estas tecnologías?
-
-### TypeScript vs JavaScript puro
--  **Type safety**: Errores detectados en compilación, no en runtime
--  **Autocompletado**: IDEs proporcionan mejor intellisense
--  **Mantenibilidad**: Código autodocumentado con tipos explícitos
+## Tecnologías
+- **Backend**: Node.js, Express, TypeScript
+- **BD**: PostgreSQL, Prisma ORM
+- **Frontend**: Handlebars (SSR)
+- **Seguridad**: bcryptjs, express-session, Zod
+- **DevOps**: Docker, Docker Compose
 -  **Refactoring seguro**: Los tipos evitan breaking changes silenciosos
 
 ### Prisma vs SQL puro

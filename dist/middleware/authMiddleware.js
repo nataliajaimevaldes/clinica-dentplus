@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isLoggedOut = exports.isLoggedIn = void 0;
-require("express-session");
-const isLoggedIn = (req, res, next) => {
+import 'express-session';
+export const isLoggedIn = (req, res, next) => {
     if (req.session && req.session.userId) {
         next();
     }
@@ -10,8 +7,7 @@ const isLoggedIn = (req, res, next) => {
         res.redirect('/login');
     }
 };
-exports.isLoggedIn = isLoggedIn;
-const isLoggedOut = (req, res, next) => {
+export const isLoggedOut = (req, res, next) => {
     if (!req.session || !req.session.userId) {
         next();
     }
@@ -19,4 +15,3 @@ const isLoggedOut = (req, res, next) => {
         res.redirect('/affiliates');
     }
 };
-exports.isLoggedOut = isLoggedOut;

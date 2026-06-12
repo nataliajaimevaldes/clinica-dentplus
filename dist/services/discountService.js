@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.calculateDiscount = void 0;
-const calculateDiscount = (membershipType, amount) => {
+export const calculateDiscount = (membershipType, amount) => {
     let discount = 0;
     switch (membershipType) {
         case "silver":
@@ -20,4 +17,3 @@ const calculateDiscount = (membershipType, amount) => {
         finalPrice
     };
 };
-exports.calculateDiscount = calculateDiscount;

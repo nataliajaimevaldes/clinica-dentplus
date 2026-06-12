@@ -1,10 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AffiliateController = void 0;
-const affiliate_schemas_js_1 = require("../schemas/affiliate.schemas.js");
-const affiliate_model_js_1 = require("../models/affiliate.model.js");
-const parseError_js_1 = require("../lib/parseError.js");
-class AffiliateController {
+import { affiliateSchema } from '../schemas/affiliate.schemas.js';
+import { AffiliateModel } from '../models/affiliate.model.js';
+import { formatZodErrors } from '../lib/parseError.js';
+export class AffiliateController {
     // MOSTRAR AFILIADOS
     static async index(req, res) {
         try {
@@ -12,7 +9,7 @@ class AffiliateController {
             if (!userId) {
                 return res.redirect('/login');
             }
-            const affiliates = await affiliate_model_js_1.AffiliateModel.getAll(userId);
+            const affiliates = await AffiliateModel.getAll(userId);
             const userEmail = req.session?.userEmail;
             res.render("affiliates/index", {
                 affiliates,
@@ -31,9 +28,9 @@ class AffiliateController {
     // CREAR AFILIADO
     static async create(req, res) {
         try {
-            const validatedData = affiliate_schemas_js_1.affiliateSchema.safeParse(req.body);
+            const validatedData = affiliateSchema.safeParse(req.body);
             if (!validatedData.success) {
-                const errors = (0, parseError_js_1.formatZodErrors)(validatedData.error);
+                const errors = formatZodErrors(validatedData.error);
                 return res.render("affiliates/create", {
                     errors
                 });
@@ -42,7 +39,7 @@ class AffiliateController {
             if (!userId) {
                 return res.redirect('/login');
             }
-            await affiliate_model_js_1.AffiliateModel.create(validatedData.data, userId);
+            await AffiliateModel.create(validatedData.data, userId);
             res.redirect("/affiliates");
         }
         catch (error) {
@@ -60,7 +57,7 @@ class AffiliateController {
             if (!userId) {
                 return res.redirect('/login');
             }
-            const affiliate = await affiliate_model_js_1.AffiliateModel.getById(id, userId);
+            const affiliate = await AffiliateModel.getById(id, userId);
             if (!affiliate || affiliate.userId !== userId) {
                 return res.redirect("/affiliates");
             }
@@ -81,7 +78,7 @@ class AffiliateController {
             if (!userId) {
                 return res.redirect('/login');
             }
-            const affiliate = await affiliate_model_js_1.AffiliateModel.getById(id, userId);
+            const affiliate = await AffiliateModel.getById(id, userId);
             if (!affiliate || affiliate.userId !== userId) {
                 return res.redirect("/affiliates");
             }
@@ -102,10 +99,10 @@ class AffiliateController {
             if (!userId) {
                 return res.redirect('/login');
             }
-            const validatedData = affiliate_schemas_js_1.affiliateSchema.safeParse(req.body);
+            const validatedData = affiliateSchema.safeParse(req.body);
             if (!validatedData.success) {
-                const errors = (0, parseError_js_1.formatZodErrors)(validatedData.error);
-                const affiliate = await affiliate_model_js_1.AffiliateModel.getById(id, userId);
+                const errors = formatZodErrors(validatedData.error);
+                const affiliate = await AffiliateModel.getById(id, userId);
                 if (!affiliate) {
                     return res.redirect("/affiliates");
                 }
@@ -118,7 +115,7 @@ class AffiliateController {
                     membershipType: req.body.membershipType
                 });
             }
-            await affiliate_model_js_1.AffiliateModel.update(id, validatedData.data, userId);
+            await AffiliateModel.update(id, validatedData.data, userId);
             res.redirect("/affiliates");
         }
         catch (error) {
@@ -136,7 +133,7 @@ class AffiliateController {
             if (!userId) {
                 return res.redirect('/login');
             }
-            await affiliate_model_js_1.AffiliateModel.delete(id, userId);
+            await AffiliateModel.delete(id, userId);
             res.redirect("/affiliates");
         }
         catch (error) {
@@ -153,7 +150,7 @@ class AffiliateController {
                 return res.redirect('/login');
             }
             const amount = Number(req.body.amount);
-            const affiliate = await affiliate_model_js_1.AffiliateModel.getById(id, userId);
+            const affiliate = await AffiliateModel.getById(id, userId);
             if (!affiliate || affiliate.userId !== userId) {
                 return res.redirect("/affiliates");
             }
@@ -183,4 +180,3 @@ class AffiliateController {
         }
     }
 }
-exports.AffiliateController = AffiliateController;

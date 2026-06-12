@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.AffiliateModel = void 0;
-const client_1 = require("@prisma/client");
-const prisma = new client_1.PrismaClient();
-class AffiliateModel {
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+export class AffiliateModel {
     static async getAll(userId) {
         return await prisma.affiliate.findMany({
             where: { userId }
@@ -45,4 +42,3 @@ class AffiliateModel {
         });
     }
 }
-exports.AffiliateModel = AffiliateModel;

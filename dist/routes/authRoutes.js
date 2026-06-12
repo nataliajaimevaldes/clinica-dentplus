@@ -1,10 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const auth_controller_js_1 = require("../controllers/auth.controller.js");
-const router = (0, express_1.Router)();
-router.get('/register', auth_controller_js_1.AuthController.registerView);
-router.post('/register', auth_controller_js_1.AuthController.register);
-router.get('/login', auth_controller_js_1.AuthController.loginView);
-router.post('/login', auth_controller_js_1.AuthController.login);
-exports.default = router;
+import { Router } from 'express';
+import { AuthController } from '../controllers/auth.controller.js';
+const router = Router();
+router.get('/register', AuthController.registerView);
+router.post('/register', AuthController.register);
+router.get('/login', AuthController.loginView);
+router.post('/login', AuthController.login);
+export default router;
